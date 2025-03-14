@@ -1,178 +1,167 @@
 
-# Agriculture Data Analysis - Rainfall, Temperature, Humidity, and Yield
 
-## Overview
+# 🌾 Agriculture Data Analysis - Rainfall, Temperature, Humidity, and Yield  
 
-This project investigates the relationship between weather patterns (rainfall, temperature, humidity) and crop yield.  The aim is to provide insights into how these environmental factors impact agricultural output, potentially for optimizing farming practices or predicting yields.
+## 📌 Overview  
+This project analyzes the **relationship between weather patterns** (rainfall, temperature, humidity) and **crop yield**. By leveraging **AWS, Snowflake, and Power BI**, we aim to provide **data-driven insights** to optimize farming practices and predict agricultural production.  
 
-This project utilizes a cloud-based data pipeline, leveraging the power of AWS for data storage, Snowflake for data warehousing and transformation, and Power BI for interactive data visualization and dashboarding.
+## 🛠️ Technologies Used  
+- **Cloud Platform:** AWS (Amazon S3 for data storage)  
+- **Data Warehouse:** Snowflake  
+- **Data Querying & Transformation:** Snowflake SQL  
+- **Data Visualization & Dashboarding:** Power BI  
 
-## Technologies Used
+---  
 
-*   **Cloud Platform:** AWS (Likely AWS S3 for data storage)
-*   **Data Warehouse:** Snowflake
-*   **Data Transformation & Querying:** Snowflake SQL
-*   **Data Visualization & Dashboarding:** Power BI
+## 🔄 Project Workflow  
 
-## Workflow/Steps
+### 1️⃣ Data Acquisition & Storage (**AWS S3**)  
+- Agricultural datasets, including weather and yield data, are stored in **AWS S3**.  
+- A **Snowflake Storage Integration** is configured to securely access S3 data.  
 
-The project follows these key steps:
+### 2️⃣ Data Warehousing & Transformation (**Snowflake**)  
+- A **Snowflake database and schema** are created for structured data management.  
+- Data is **loaded from AWS S3 into Snowflake** using the `COPY INTO` command.  
+- **Data cleaning and transformations** include:  
+  - Adjusting rainfall and area values for scenario analysis.  
+  - Creating categorical columns like `Year_Group` and `Rainfall_Groups` for analysis.  
 
-1.  **Data Acquisition & Storage (AWS):**
-    *   Agricultural datasets (including weather data and crop yield data) are managed and accessed using AWS cloud services, likely utilizing AWS S3 for storage.
-    *   Snowflake Storage Integration is configured to securely connect to the data stored in AWS S3.
-
-2.  **Data Warehousing & Transformation (Snowflake):**
-    *   Snowflake is used as a cloud data warehouse to store and manage the agricultural datasets.
-    *   A dedicated Snowflake database and schema are created for the project.
-    *   Extensive data transformation and cleaning are performed using Snowflake SQL. Key SQL tasks include:
-        *   Loading data from AWS S3 into Snowflake tables using the `COPY INTO` command.
-        *   Updating data values (e.g., rainfall, area) using `UPDATE` statements for data manipulation and scenario analysis.
-        *   Creating new categorical columns (e.g., `Year_Group`, `rainfall_groups`) using `ALTER TABLE` and `UPDATE` statements to segment and group data for enhanced analysis.
-
-3.  **Data Visualization & Dashboarding (Power BI):**
-    *   Data is imported from Snowflake into Power BI Desktop.
-    *   Interactive dashboards are developed in Power BI to analyze:
-
-       
-        Rainfall patterns and their correlation with crop yield.
+### 3️⃣ Data Visualization & Dashboarding (**Power BI**)  
+- Data from **Snowflake is imported into Power BI Desktop**.  
+- **Interactive dashboards** analyze:  
+  - Rainfall impact on crop yield.  
+  - Temperature variations and their effects on yield.  
+  - Humidity levels and their influence on agricultural output.  
+  - Overall yield analysis considering multiple weather factors.  
 
 
-        ![Image](https://github.com/user-attachments/assets/7e26c436-50a4-484e-95b2-e0e1d0568e9e)
 
-          Temperature variations and their impact on yield.
+---  
 
-        ![Image](https://github.com/user-attachments/assets/8e06d853-605d-4527-a2cf-31503b4df24e)
+## 📊 Power BI Dashboard Insights  
+The **Power BI dashboard** presents **interactive visualizations** showing:  
 
-        Humidity levels and their influence on agricultural output.
-        
-![Image](https://github.com/user-attachments/assets/7aaef907-2e78-40bf-b380-1b2285fe97b9)
+1. 📈 **Rainfall Patterns vs. Crop Yield**  
+   - Identifies how different rainfall levels affect crop yield.  
 
-         Overall yield analysis in relation to combined weather factors.
+![Image](https://github.com/user-attachments/assets/7e26c436-50a4-484e-95b2-e0e1d0568e9e)
+
+2. 🌡️ **Temperature Impact on Yield**  
+   - Analyzes seasonal temperature variations and their correlation with agricultural production.
+
+![Image](https://github.com/user-attachments/assets/8e06d853-605d-4527-a2cf-31503b4df24e)
+
+3. 💧 **Humidity and Agricultural Output**  
+   - Evaluates how humidity levels impact crop growth. 
+
+![Image](https://github.com/user-attachments/assets/7aaef907-2e78-40bf-b380-1b2285fe97b9) 
+
+4. 📊 **Comprehensive Yield Analysis**  
+   - Examines the combined impact of rainfall, temperature, and humidity on yield.
 
 ![Image](https://github.com/user-attachments/assets/37b8dbb9-7176-4cdf-9fd8-63bbd153c515)
-    
-     The Power BI dashboard is designed to present findings related to the impact of rainfall, temperature, and humidity on agricultural yield in a clear and interactive manner.
+---  
 
-## Readme File Contents (Snowflake Integration Code)
+
+## 🗄️ Snowflake Integration Code  
 
 ```sql
- CREATE OR REPLACE STORAGE INTEGRATION PBI_Integration
-  TYPE = EXTERNAL_STAGE
-  STORAGE_PROVIDER = 'S3'
-  ENABLED = TRUE
-  STORAGE_AWS_ROLE_ARN = 'arn:aws:iam::825765422200:role/powerbi.role'
-  STORAGE_ALLOWED_LOCATIONS = ('s3://powerbi.project/')
-  COMMENT = 'Optional Comment';
+-- Creating a Snowflake storage integration for AWS S3  
+CREATE OR REPLACE STORAGE INTEGRATION PBI_Integration  
+  TYPE = EXTERNAL_STAGE  
+  STORAGE_PROVIDER = 'S3'  
+  ENABLED = TRUE  
+  STORAGE_AWS_ROLE_ARN = 'arn:aws:iam::825765422200:role/powerbi.role'  
+  STORAGE_ALLOWED_LOCATIONS = ('s3://powerbi.project/')  
+  COMMENT = 'Power BI Integration with AWS S3';  
+
+-- Checking the integration  
+DESC INTEGRATION PBI_Integration;  
+
+-- Creating the database and schema  
+CREATE DATABASE PowerBI;  
+CREATE SCHEMA PBI_Data;  
+
+-- Creating the dataset table  
+CREATE TABLE PBI_Dataset (  
+    Year INT,  
+    Location STRING,  
+    Area INT,  
+    Rainfall FLOAT,  
+    Temperature FLOAT,  
+    Soil_type STRING,  
+    Irrigation STRING,  
+    Yield INT,  
+    Humidity FLOAT,  
+    Crops STRING,  
+    Price INT,  
+    Season STRING  
+);  
+
+-- Copying data from AWS S3 to Snowflake  
+COPY INTO PBI_Dataset  
+FROM @pbi_stage  
+FILE_FORMAT = (TYPE=CSV FIELD_DELIMITER=',' SKIP_HEADER=1)  
+ON_ERROR = 'CONTINUE';  
+
+-- Creating an agriculture table as a copy of PBI_Dataset  
+CREATE TABLE Agriculture AS  
+SELECT * FROM PBI_Dataset;  
+
+-- Updating data values for scenario analysis  
+UPDATE Agriculture SET Rainfall = 1.1 * Rainfall;  
+UPDATE Agriculture SET Area = 0.9 * Area;  
+
+-- Creating a Year_Group column to categorize years  
+ALTER TABLE Agriculture ADD Year_Group STRING;  
+
+-- Assigning year groups  
+UPDATE Agriculture SET Year_Group = 'Y1' WHERE Year BETWEEN 2004 AND 2009;  
+UPDATE Agriculture SET Year_Group = 'Y2' WHERE Year BETWEEN 2010 AND 2015;  
+UPDATE Agriculture SET Year_Group = 'Y3' WHERE Year BETWEEN 2016 AND 2019;  
+
+-- Creating a Rainfall_Groups column  
+ALTER TABLE Agriculture ADD Rainfall_Groups STRING;  
+
+-- Assigning rainfall categories  
+UPDATE Agriculture SET Rainfall_Groups = 'Low' WHERE Rainfall BETWEEN 255 AND 1200;  
+UPDATE Agriculture SET Rainfall_Groups = 'Medium' WHERE Rainfall BETWEEN 1200 AND 2800;  
+UPDATE Agriculture SET Rainfall_Groups = 'High' WHERE Rainfall BETWEEN 2800 AND 4103;  
+
+-- Verifying the final dataset  
+SELECT * FROM Agriculture;  
+```
+
+---  
+
+## 📂 Project Structure  
+
+```
+📂 Agriculture-Data-Analysis  
+│── 📁 Data  
+│   ├── Rainfall_Temperature_Humidity_Yield.csv  
+│── 📁 SQL-Scripts  
+│   ├── Snowflake_Integration.sql  
+│── 📁 PowerBI-Dashboards  
+│   ├── Agriculture_Analysis.pbix  
+│── 📜 README.md  
+```  
+
+---  
+
+## 📌 Key Takeaways  
+✅ **Cloud-Based Data Pipeline:** Efficient data storage (AWS S3), processing (Snowflake), and visualization (Power BI).  
+✅ **Data Transformation & Cleaning:** Using **Snowflake SQL** to structure and analyze agricultural datasets.  
+✅ **Predictive Insights:** Helps farmers and policymakers optimize agricultural strategies based on weather conditions.  
+
+## 📥 **How to Use the Project**  
+
+1. Open https://github.com/Medha-77/Impact-of-Weather-Patterns-on-Crop-Yield
+2. Explore **interactive dashboards & insights!** 
 
 
-  //description Integration Object
-  desc integration PBI_Integration;
+---  
 
-//drop integration PBI_Integration
-
---------------------------------------------
-//drop database PowerBI
-
-CREATE database PowerBI;
-
-create schema PBI_Data;
-
-create table PBI_Dataset (
-Year int,	Location string,	Area	int,
-Rainfall	float, Temperature	float, Soil_type string,
-Irrigation	string, yeilds	int,Humidity	float,
-Crops	string,price	int,Season string
-);
-
-select * from PBI_Dataset;
-
-//drop database test;
-
-create stage PowerBI.PBI_Data.pbi_stage
-url = 's3://powerbi.project'
-storage_integration = PBI_Integration;
-
-//desc stage s1
-
-//drop stage s1;
-
-
-copy into PBI_Dataset
-from @pbi_stage
-file_format = (type=csv field_delimiter=',' skip_header=1 )
-on_error = 'continue';
-
-list @pbi_stage;
-
-create table agriculture as
-select * from pbi_dataset;
-
-select * from agriculture;
-
-update agriculture
-set rainfall = 1.1*rainfall;
-
-update agriculture
-set area = 0.9*area;
-
-select * from agriculture;
-
-
-//Year 2004 & 2009 - Y1
-//Year 2010 & 2015 - Y2
-//Year 2016 & 2019 - Y3
-
-ALTER TABLE Agriculture
-add Year_Group String;
-
-select * from agriculture;
-
-//1st update
-update agriculture
-set year_group = 'Y1'
-where year >=2004 and year<=2009;
-
-//2nd update
-update agriculture
-set year_group = 'Y2'
-where year >=2010 and year<=2015;
-
-
-//3rd Update
-update agriculture
-set year_group = 'Y3'
-where year >=2016 and year<=2019;
-
-
-select * from agriculture;
-
-
-//Rainfall_Groups
-//Min 255 Max 4103
-
-//rainfall 255 & 1200 - Low
-//rainfall 1200 2800 - Medium
-//Rainfall 2800 & 4103 - High
-
-alter table agriculture
-add rainfall_groups string;
-
-select * from agriculture;
-
-//1st Update
-update agriculture
-set rainfall_groups = 'Low'
-where rainfall>=255 and rainfall<1200;
-
-//2nd update
-update agriculture
-set rainfall_groups = 'Medium'
-where rainfall >=1200 and rainfall<2800;
-
-//3rd update
-update agriculture
-set rainfall_groups='High'
-where rainfall >=2800;
+### 🌱 **This project demonstrates how cloud-based data analytics can transform agriculture!** 
 
 select * from agriculture;
